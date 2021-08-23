@@ -4,7 +4,7 @@ const path = require('path');
 
 const server = http.createServer((req, res) => {
   console.log('Server DEDA');
-  
+
   res.setHeader('Content-Type', 'text/html');
 
   const createPath = page => path.resolve(__dirname, 'views', `${page}.html`);
@@ -14,20 +14,24 @@ const server = http.createServer((req, res) => {
   switch (req.url) {
     case '/':
       basePath = createPath('index');
+      res.statusCode = 200;
       break;
 
     case '/contacts':
       basePath = createPath('contacts');
+      res.statusCode = 200;
       break;
 
     default:
       basePath = createPath('error');
+      res.statusCode = 404;
       break;
   }
 
   fs.readFile(basePath, (err, data) => {
     if (err) {
       console.log(err);
+      res.statusCode = 500;
       res.end();
     } else {
       res.write(data);
