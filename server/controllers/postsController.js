@@ -1,10 +1,8 @@
-import Post from '../models/Post.js';
-
+import PostsService from '../services/postsService.js';
 class PostsController {
   async create(req, res) {
     try {
-      const { author, title, content, picture } = req.body;
-      const post = await Post.create({ author, title, content, picture });
+      const post = await PostsService.create(req.body);
       res.json(post);
     } catch (err) {
       res.status(500).json(err);
@@ -13,7 +11,7 @@ class PostsController {
 
   async getAll(req, res) {
     try {
-      const posts = await Post.find();
+      const posts = await PostsService.getAll();
       res.json(posts);
     } catch (err) {
       res.status(500).json(err);
@@ -22,13 +20,7 @@ class PostsController {
 
   async getOne(req, res) {
     try {
-      const { id } = req.params;
-
-      if (!id) {
-        res.status(400).json({ message: 'id не указан' });
-      }
-
-      const post = await Post.findById(id);
+      const post = await PostsService.getOne(req.params.id);
       res.json(post);
     } catch (err) {
       res.status(500).json(err);
@@ -37,29 +29,16 @@ class PostsController {
 
   async update(req, res) {
     try {
-      const post = req.body;
-      if (!post._id) {
-        res.status(400).json({ message: 'Не указан id' });
-      }
-
-      const updatedPost = await Post.findByIdAndUpdate(post._id, post, {
-        new: true,
-      });
-      res.json(updatedPost);
+      const posts = await PostsService.update(req.body);
+      res.json(posts);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 
   async delete(req, res) {
     try {
-      const { id } = req.params;
-
-      if (!id) {
-        res.status(400).json({ message: 'id не указан' });
-      }
-
-      const post = await Post.findByIdAndDelete(id);
+      const post = await PostsService.delete(req.params.id);
       res.json(post);
     } catch (err) {
       res.status(500).json(err);
