@@ -2,7 +2,7 @@ import PostsService from '../services/postsService.js';
 class PostsController {
   async create(req, res) {
     try {
-      const post = await PostsService.create(req.body);
+      const post = await PostsService.create(req.body, req.files.picture);
       res.json(post);
     } catch (err) {
       res.status(500).json(err);
